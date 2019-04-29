@@ -8,41 +8,54 @@ namespace Hexapawn
 {
     class Game
     {
-        public string[,] BotPawnsPositions { get; private set; }
-        public string[,] PlayerPawnsPositions { get; private set; }
         public string[,] GamePawnsPositions { get; private set; }
+        public string[] BotPaws { get; private set; }
+        public string[] PlayerPawns { get; private set; }
+        public string Winner { get; private set; }
 
         public Game()
         {
-            BotPawnsPositions = new string[3,2] {
-                { "Bot1", "X" },
-                { "Bot2", "X" },
-                { "Bot3", "X" }
-            };
+            Winner = null;
+            BotPaws = new string[3] { "K1", "K2", "K3" };
+            PlayerPawns = new string[3] { "P1", "P2", "P3" };
 
-            PlayerPawnsPositions = new string[3, 2] {
-                { "Player1", "O"},
-                { "Player2", "O"},
-                { "Player3", "O"}
-            };
-
-            // Fixed positions - Position being occupied - Value to be shown in the game table
+            // Fixed positions - Position being occupied
             GamePawnsPositions = new string[9, 2] {
-                {"A1", BotPawnsPositions[0,1]},
-                {"A2", " "},
-                {"A3", PlayerPawnsPositions[0,1]},
-                {"B1", BotPawnsPositions[1,1]},
-                {"B2", " "},
-                {"B3", PlayerPawnsPositions[1,1]},
-                {"C1", BotPawnsPositions[2,1]},
-                {"C2", " "},
-                {"C3", PlayerPawnsPositions[2,1]}
+                {"A1", BotPaws[0]},
+                {"A2", "  "},
+                {"A3", PlayerPawns[0]},
+                {"B1", BotPaws[1]},
+                {"B2", "  "},
+                {"B3", PlayerPawns[1]},
+                {"C1", BotPaws[2]},
+                {"C2", "  "},
+                {"C3", PlayerPawns[2]}
             };
         }
 
         public void Move(string[] move)
         {
-            
+            string selectedPawn = move[0];
+            string pawnDestiny = move[1];
+            int selectedPawnPosition = 0;
+            int pawnDestinyPosition = 0;
+
+            for (int i = 0; i < 9; i++)
+            {
+                if (selectedPawn == GamePawnsPositions[i, 1])
+                {
+                    selectedPawnPosition = i;
+                }
+
+                if (pawnDestiny == GamePawnsPositions[i, 0])
+                {
+                    pawnDestinyPosition = i;
+                }
+            }
+
+
+            GamePawnsPositions[selectedPawnPosition, 1] = "  ";
+            GamePawnsPositions[pawnDestinyPosition, 1] = selectedPawn;
         }
 
     }
