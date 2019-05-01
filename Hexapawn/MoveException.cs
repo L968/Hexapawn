@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace Hexapawn
 {
-    class Bot
+    class MoveException : Exception
     {
-        public static string[] GetMove(Game game)
-        {
-            return new string[2] {"K1", "A2"};
-        }
-
-        public void RemoveMove()
+        public MoveException(string message) : base(message + "\n")
         {
 
         }
