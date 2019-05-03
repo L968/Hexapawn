@@ -13,11 +13,11 @@ namespace Hexapawn
         public string[] PlayerPawns { get; private set; }
         public string Winner { get; private set; }
         private string SelectedPawn { get; set; }
-        private string TurnOwner { get; set; }
+        private string ActivePlayer { get; set; }
 
         public Game()
         {
-            TurnOwner = "Player";
+            ActivePlayer = "Player"; // First turn
             Winner = null;
             BotPawns = new string[3] { "K1", "K2", "K3" };
             PlayerPawns = new string[3] { "P1", "P2", "P3" };
@@ -56,18 +56,18 @@ namespace Hexapawn
             int selectedPawnPositionInArray = 0;
             int pawnDestinyPositionInArray = 0;
 
-            IsExistingPawn(selectedPawn);
-            IsActivePlayerThePawnsOwner(selectedPawn);
+            IsExistingPawn();
+            IsActivePlayerThePawnsOwner();
             IsExistingDestiny(pawnDestiny);
 
-            selectedPawnPositionInArray = GetSelectedPawnPositionInArray(selectedPawn);
+            selectedPawnPositionInArray = GetSelectedPawnPositionInArray();
             pawnDestinyPositionInArray = GetPawnDestinyPositionInArray(pawnDestiny);
 
             if (IsLegalMove(selectedPawnPositionInArray, pawnDestinyPositionInArray))
             {
                 MovePawn(selectedPawnPositionInArray, pawnDestinyPositionInArray);
                 CheckWinner();
-                SwitchTurnOwner();
+                SwitchActivePlayer();
             }
             else
             {
@@ -76,50 +76,26 @@ namespace Hexapawn
             
         }
 
-        private int GetSelectedPawnPositionInArray(string selectedPawn)
+        private void IsExistingPawn()
         {
-            for (int i = 0; i < GamePawnsPositions.GetLength(0); i++)
-            {
-                if (selectedPawn == GamePawnsPositions[i, 1])
-                {
-                    return i;
-                }
-            }
-            throw new MoveException("Erro ao pegar posição da peça no array");
-        }
-
-        private int GetPawnDestinyPositionInArray(string pawnDestiny)
-        {
-            for (int i = 0; i < GamePawnsPositions.GetLength(0); i++)
-            {
-                if (pawnDestiny == GamePawnsPositions[i, 0])
-                {
-                    return i;
-                }
-            }
-            throw new MoveException("Erro ao pegar posição do destino no array");
-        }
-
-        private void IsExistingPawn(string selectedPawn)
-        {
-            if (PlayerPawns.Contains(SelectedPawn) || BotPawns.Contains(SelectedPawn))
+            if (!PlayerPawns.Contains(SelectedPawn) && !BotPawns.Contains(SelectedPawn))
             {
                 throw new MoveException("Peça não encontrada");
             }
         }
 
-        private void IsActivePlayerThePawnsOwner(string selectedPawn)
+        private void IsActivePlayerThePawnsOwner()
         {
-            if (TurnOwner == "Player")
+            if (ActivePlayer == "Player")
             {
-                if (!PlayerPawns.Contains(selectedPawn))
+                if (!PlayerPawns.Contains(SelectedPawn))
                 {
                     throw new MoveException("Apenas selecione suas peças!");
                 }
             }
             else
             {
-                if (!BotPawns.Contains(selectedPawn))
+                if (!BotPawns.Contains(SelectedPawn))
                 {
                     throw new MoveException("Apenas selecione suas peças!");
                 }
@@ -137,6 +113,30 @@ namespace Hexapawn
             }
             throw new MoveException("Escolha um destino existente.");
         }
+
+        private int GetSelectedPawnPositionInArray()
+        {
+            for (int i = 0; i < GamePawnsPositions.GetLength(0); i++)
+            {
+                if (SelectedPawn == GamePawnsPositions[i, 1])
+                {
+                    return i;
+                }
+            }
+            throw new MoveException("Erro ao pegar posição da peça no array");
+        }
+
+        private int GetPawnDestinyPositionInArray(string pawnDestiny)
+        {
+            for (int i = 0; i < GamePawnsPositions.GetLength(0); i++)
+            {
+                if (pawnDestiny == GamePawnsPositions[i, 0])
+                {
+                    return i;
+                }
+            }
+            throw new MoveException("Erro ao pegar posição do destino no array");
+        }        
 
         private bool IsLegalMove(int selectedPawnPositionInArray, int pawnDestinyPositionInArray)
         {
@@ -272,16 +272,17 @@ namespace Hexapawn
             GamePawnsPositions[pawnDestinyPosition, 1] = SelectedPawn;
         }
 
-        private void SwitchTurnOwner()
+        private void SwitchActivePlayer()
         {
-            if (TurnOwner == "Player")
+            if (ActivePlayer == "Player")
             {
-                TurnOwner = "Bot";
+                ActivePlayer = "Bot";
             }
-            else if (TurnOwner == "Bot")
+            else if (ActivePlayer == "Bot")
             {
-                TurnOwner = "Player";
+                ActivePlayer = "Player";
             }
+            SelectedPawn = null;
         }
 
         private void CheckWinner()
