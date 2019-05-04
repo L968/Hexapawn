@@ -8,7 +8,7 @@ namespace Hexapawn
 {
     class Game
     {
-        public string[,] GamePawnsPositions { get; private set; }
+        public string[,] Board { get; private set; }
         public string[] BotPawns { get; private set; }
         public string[] PlayerPawns { get; private set; }
         public string Winner { get; private set; }
@@ -35,7 +35,7 @@ namespace Hexapawn
             */
 
             // Fixed positions - Position being occupied
-            GamePawnsPositions = new string[9, 2] {
+            Board = new string[9, 2] {
                 {"A1", BotPawns[0]},     // 0
                 {"A2", null},            // 1
                 {"A3", PlayerPawns[0]},  // 2
@@ -104,9 +104,9 @@ namespace Hexapawn
 
         private void IsExistingDestiny(string pawnDestiny)
         {
-            for (int i = 0; i < GamePawnsPositions.GetLength(0); i++)
+            for (int i = 0; i < Board.GetLength(0); i++)
             {
-                if (GamePawnsPositions[i, 0] == pawnDestiny)
+                if (Board[i, 0] == pawnDestiny)
                 {
                     return;
                 }
@@ -116,9 +116,9 @@ namespace Hexapawn
 
         private int GetSelectedPawnPositionInArray()
         {
-            for (int i = 0; i < GamePawnsPositions.GetLength(0); i++)
+            for (int i = 0; i < Board.GetLength(0); i++)
             {
-                if (SelectedPawn == GamePawnsPositions[i, 1])
+                if (SelectedPawn == Board[i, 1])
                 {
                     return i;
                 }
@@ -128,9 +128,9 @@ namespace Hexapawn
 
         private int GetPawnDestinyPositionInArray(string pawnDestiny)
         {
-            for (int i = 0; i < GamePawnsPositions.GetLength(0); i++)
+            for (int i = 0; i < Board.GetLength(0); i++)
             {
-                if (pawnDestiny == GamePawnsPositions[i, 0])
+                if (pawnDestiny == Board[i, 0])
                 {
                     return i;
                 }
@@ -268,8 +268,8 @@ namespace Hexapawn
 
         private void MovePawn(int selectedPawnPosition, int pawnDestinyPosition)
         {
-            GamePawnsPositions[selectedPawnPosition, 1] = null;
-            GamePawnsPositions[pawnDestinyPosition, 1] = SelectedPawn;
+            Board[selectedPawnPosition, 1] = null;
+            Board[pawnDestinyPosition, 1] = SelectedPawn;
         }
 
         private void SwitchActivePlayer()
