@@ -58,6 +58,7 @@ namespace Hexapawn
 
             IsExistingPawn();
             IsActivePlayerThePawnsOwner();
+            IsPawnStillOnBoard();
             IsExistingDestiny(pawnDestiny);
 
             selectedPawnPositionInArray = GetSelectedPawnPositionInArray();
@@ -76,12 +77,27 @@ namespace Hexapawn
             
         }
 
+        #region Basic Validations
+
         private void IsExistingPawn()
         {
             if (!PlayerPawns.Contains(SelectedPawn) && !BotPawns.Contains(SelectedPawn))
             {
                 throw new MoveException("Peça não encontrada");
             }
+        }
+
+        private void IsPawnStillOnBoard()
+        {
+            for (int i = 0; i < Board.GetLength(0); i++)
+            {
+                if (SelectedPawn == Board[i, 1])
+                {
+                    return;
+                }
+            }
+
+            throw new MoveException("Está peça não está mais em jogo.");
         }
 
         private void IsActivePlayerThePawnsOwner()
@@ -114,6 +130,8 @@ namespace Hexapawn
             throw new MoveException("Escolha um destino existente.");
         }
 
+        #endregion
+       
         private int GetSelectedPawnPositionInArray()
         {
             for (int i = 0; i < Board.GetLength(0); i++)
@@ -136,7 +154,9 @@ namespace Hexapawn
                 }
             }
             throw new MoveException("Erro ao pegar posição do destino no array");
-        }        
+        }
+
+        #region LegalMove Validations
 
         private bool IsLegalMove(int selectedPawnPositionInArray, int pawnDestinyPositionInArray)
         {
@@ -266,10 +286,13 @@ namespace Hexapawn
             return false;
         }
 
+        #endregion
+
         private void MovePawn(int selectedPawnPosition, int pawnDestinyPosition)
         {
             Board[selectedPawnPosition, 1] = null;
             Board[pawnDestinyPosition, 1] = SelectedPawn;
+            SelectedPawn = null;
         }
 
         private void SwitchActivePlayer()
@@ -282,7 +305,6 @@ namespace Hexapawn
             {
                 ActivePlayer = "Player";
             }
-            SelectedPawn = null;
         }
 
         private void CheckWinner()

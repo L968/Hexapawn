@@ -11,7 +11,6 @@ namespace Hexapawn
     {
         static void Main(string[] args)
         {
-
             // New game starting with default positions.
             Game game = new Game();
 
@@ -19,13 +18,18 @@ namespace Hexapawn
             {
                 DrawBoard(game.Board);
                 Console.Write("Escolha a peça que será movimentada (P1, P2, P3): ");
-                string pawn = Console.ReadLine().ToUpper();
+                string pawn = Console.ReadLine().ToUpper().Trim();
                 Console.Write("Escolha o local de destino da peça: ");
-                string position = Console.ReadLine().ToUpper();
+                string position = Console.ReadLine().ToUpper().Trim();
 
                 try
                 {
                     game.Move(Player.GetMove(pawn, position));
+
+                    if (game.Winner != null)
+                    {
+                        break;
+                    }
                 }
                 catch (MoveException ex)
                 {
