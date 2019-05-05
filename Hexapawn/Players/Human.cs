@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hexapawn
+namespace Hexapawn.Players
 {
-    class Player
+    public class Human : Player
     {
         public static string[] GetMove(string pawn, string position)
         {
-            return new string[2] {pawn, position};
+            return new string[2] { pawn, position };
         }
     }
 }

@@ -1,57 +1,36 @@
-﻿using System;
+﻿using Hexapawn.Players;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hexapawn
+namespace Hexapawn.GameComponents
 {
     class Game
     {
-        public string[,] Board { get; private set; }
-        public string[] BotPawns { get; private set; }
-        public string[] PlayerPawns { get; private set; }
-        public string Winner { get; private set; }
+        public Player Player1 { get; private set; }
+        public Player Player2 { get; private set; }
+        public Player Winner { get; private set; }
+        private Player ActivePlayer { get; set; }
+        public Board Board { get; private set; }
         private string SelectedPawn { get; set; }
-        private string ActivePlayer { get; set; }
+        public int Turn { get;private set; }
 
         public Game()
         {
-            ActivePlayer = "Player"; // First turn
-            Winner = null;
-            BotPawns = new string[3] { "K1", "K2", "K3" };
-            PlayerPawns = new string[3] { "P1", "P2", "P3" };
+            Turn = 1;
+            Player1 = new Human();
+            Player2 = new Bot();
+            Board = new Board(this);
+            ActivePlayer = Player1; // First turn
 
-            /* 
-                 a    b    c
-              +--------------+
-            1 | K1 | K2 | K3 |
-              +--------------+
-            2 |    |    |    |
-              +--------------+
-            3 | P1 | P2 | P3 |
-              +--------------+
-
-            */
-
-            // Fixed positions - Position being occupied
-            Board = new string[9, 2] {
-                {"A1", BotPawns[0]},     // 0
-                {"A2", null},            // 1
-                {"A3", PlayerPawns[0]},  // 2
-                {"B1", BotPawns[1]},     // 3
-                {"B2", null},            // 4
-                {"B3", PlayerPawns[1]},  // 5
-                {"C1", BotPawns[2]},     // 6
-                {"C2", null},            // 7
-                {"C3", PlayerPawns[2]}   // 8
-            };
         }
 
         public void Move(string[] move)
         {
             string selectedPawn = move[0]; // e.g: P1, K1
-            SelectedPawn = selectedPawn;
+            this.SelectedPawn = selectedPawn;
             string pawnDestiny = move[1]; // e.g: A2, B2
             int selectedPawnPositionInArray = 0;
             int pawnDestinyPositionInArray = 0;
@@ -160,7 +139,7 @@ namespace Hexapawn
 
         private bool IsLegalMove(int selectedPawnPositionInArray, int pawnDestinyPositionInArray)
         {
-            // Ilegal moves
+            // Legal moves
             //IsMovingToTheSamePosition(selectedPawnPositionInArray, pawnDestinyPositionInArray); //ok
             //IsMovingSideways(selectedPawnPositionInArray, pawnDestinyPositionInArray); // arrumar default
             //IsMovingBackwards(selectedPawn, selectedPawnPositionInArray, pawnDestinyPositionInArray);

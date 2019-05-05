@@ -43,10 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bot.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="MoveException.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="GameComponents\Board.cs" />
+    <Compile Include="Players\Bot.cs" />
+    <Compile Include="GameComponents\Game.cs" />
+    <Compile Include="Exceptions\MoveException.cs" />
+    <Compile Include="Pieces\Pawn.cs" />
+    <Compile Include="Pieces\Piece.cs" />
+    <Compile Include="Players\Human.cs" />
+    <Compile Include="Players\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

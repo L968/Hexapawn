@@ -1,4 +1,7 @@
 ﻿using System;
+using Hexapawn.Exceptions;
+using Hexapawn.GameComponents;
+using Hexapawn.Pieces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +31,7 @@ namespace Hexapawn
 
                     if (game.Winner != null)
                     {
+                        DrawBoard(game.Board);
                         break;
                     }
                 }
