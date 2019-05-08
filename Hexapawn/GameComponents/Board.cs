@@ -15,7 +15,7 @@ namespace Hexapawn.GameComponents
 
         public Board(Game game)
         {
-            BoardArray = new Piece[3,3];
+            BoardArray = new Piece[3, 3];
             Game = game;
             SetPieces();
         }
@@ -42,18 +42,17 @@ namespace Hexapawn.GameComponents
             Piece pawn6 = new Pawn(0, 2, Game.Player2, this, "K3"); // C1
         }
 
+        /// <summary>
+        /// Returns the name atribute of the Piece object in the specified position
+        /// </summary>
+        /// <param name="row">row index</param>
+        /// <param name="column">column index</param>
+        /// <returns></returns>
         public string this[int row, int column]
         {
             get
             {
-                if (BoardArray[row, column] == null)
-                {
-                    return "  ";
-                }
-                else
-                {
-                    return BoardArray[row, column].Name; 
-                }
+                return BoardArray[row, column] == null ? "  " : BoardArray[row, column].Name;
             }
         }
 

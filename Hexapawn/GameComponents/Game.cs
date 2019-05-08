@@ -1,4 +1,5 @@
 ﻿using Hexapawn.Exceptions;
+using Hexapawn.Pieces;
 using Hexapawn.Players;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,8 @@ namespace Hexapawn.GameComponents
 {
     public class Game
     {
-        public Player Player1 { get; private set; }
-        public Player Player2 { get; private set; }
+        public Human Player1 { get; private set; } // Setting that player1 is a Human
+        public Bot Player2 { get; private set; } // Setting that player2 is a Bot
         public Player Winner { get; private set; }
         private Player ActivePlayer { get; set; }
         public Board Board { get; private set; }
@@ -29,22 +30,14 @@ namespace Hexapawn.GameComponents
 
         public void Move(string[] move)
         {
-            string selectedPawn = move[0]; // e.g: P1, K1
-            string pawnDestiny = move[1]; // e.g: A2, B2
-            int selectedPawnPositionInArray = 0;
-            int pawnDestinyPositionInArray = 0;
+            Piece selectedPiece = GetPieceByPositionInBoardArray(move[0]); // e.g: P1, K1
+            int[] pieceDestiny = GetTilePositionInBoardArray(move[1]); // e.g: A2, B2
 
-            IsExistingPawn();
-            IsActivePlayerThePawnsOwner();
-            IsPawnStillOnBoard();
-            IsExistingDestiny(pawnDestiny);
+            IsActivePlayerThePieceOwner(selectedPiece);
 
-            selectedPawnPositionInArray = GetSelectedPawnPositionInArray();
-            pawnDestinyPositionInArray = GetPawnDestinyPositionInArray(pawnDestiny);
-
-            if (IsLegalMove(selectedPawnPositionInArray, pawnDestinyPositionInArray))
+            if (IsLegalMove(selectedPiece, pieceDestiny))
             {
-                MovePawn(selectedPawnPositionInArray, pawnDestinyPositionInArray);
+                MovePawn(selectedPiece, pieceDestiny);
                 CheckWinner();
                 SwitchActivePlayer();
             }
@@ -55,88 +48,59 @@ namespace Hexapawn.GameComponents
             
         }
 
+        private Piece GetPieceByPositionInBoardArray(string pawn)
+        {
+            foreach (Piece item in Board.BoardArray)
+            {
+                if (item == null) // Avoiding null reference exception in order to the foreach statement runs completely through the array*
+                {
+                    continue;
+                }
+
+                if (pawn == item.Name)
+                {
+                    return Board.BoardArray[item.XPositionOnBoard, item.YPositionOnBoard];
+                }
+            }
+            throw new MoveException("Peça não encontrada");
+        }
+
+        private int[] GetTilePositionInBoardArray(string tile)
+        {
+            switch (tile)
+            {
+                case "A1": return new int[2] { 0, 0 };
+                case "A2": return new int[2] { 1, 0 };
+                case "A3": return new int[2] { 2, 0 };
+                case "B1": return new int[2] { 0, 1 };
+                case "B2": return new int[2] { 1, 1 };
+                case "B3": return new int[2] { 2, 1 };
+                case "C1": return new int[2] { 0, 2 };
+                case "C2": return new int[2] { 1, 2 };
+                case "C3": return new int[2] { 2, 2 };
+                default: throw new MoveException("Posição no tabuleiro não encontrada");
+            }
+        }
+
         #region Basic Validations
 
-        private void IsExistingPawn()
+        private void IsActivePlayerThePieceOwner(Piece piece)
         {
-            //if (!PlayerPawns.Contains(SelectedPawn) && !BotPawns.Contains(SelectedPawn))
-            //{
-            //    throw new MoveException("Peça não encontrada");
-            //}
-        }
-
-        private void IsPawnStillOnBoard()
-        {
-            //for (int i = 0; i < Board.GetLength(0); i++)
-            //{
-            //    if (SelectedPawn == Board[i, 1])
-            //    {
-            //        return;
-            //    }
-            //}
-
-            throw new MoveException("Está peça não está mais em jogo.");
-        }
-
-        private void IsActivePlayerThePawnsOwner()
-        {
-            //if (ActivePlayer == "Player")
-            //{
-            //    if (!PlayerPawns.Contains(SelectedPawn))
-            //    {
-            //        throw new MoveException("Apenas selecione suas peças!");
-            //    }
-            //}
-            //else
-            //{
-            //    if (!BotPawns.Contains(SelectedPawn))
-            //    {
-            //        throw new MoveException("Apenas selecione suas peças!");
-            //    }
-            //}
-        }
-
-        private void IsExistingDestiny(string pawnDestiny)
-        {
-            //for (int i = 0; i < Board.GetLength(0); i++)
-            //{
-            //    if (Board[i, 0] == pawnDestiny)
-            //    {
-            //        return;
-            //    }
-            //}
-            //throw new MoveException("Escolha um destino existente.");
+            if (piece.Owner == ActivePlayer)
+            {
+                return;
+            }
+            else
+            {
+                throw new MoveException("Seleciona apenas suas peças");
+            }
         }
 
         #endregion
-       
-        private int GetSelectedPawnPositionInArray()
-        {
-            //for (int i = 0; i < Board.GetLength(0); i++)
-            //{
-            //    if (SelectedPawn == Board[i, 1])
-            //    {
-            //        return i;
-            //    }
-            //}
-            throw new MoveException("Erro ao pegar posição da peça no array");
-        }
-
-        private int GetPawnDestinyPositionInArray(string pawnDestiny)
-        {
-            //for (int i = 0; i < Board.GetLength(0); i++)
-            //{
-            //    if (pawnDestiny == Board[i, 0])
-            //    {
-            //        return i;
-            //    }
-            //}
-            throw new MoveException("Erro ao pegar posição do destino no array");
-        }
 
         #region LegalMove Validations
 
-        private bool IsLegalMove(int selectedPawnPositionInArray, int pawnDestinyPositionInArray)
+        private bool IsLegalMove(Piece piece, int[] pieceDestiny)
         {
             // Legal moves
             //IsMovingToTheSamePosition(selectedPawnPositionInArray, pawnDestinyPositionInArray); //ok
@@ -152,32 +116,33 @@ namespace Hexapawn.GameComponents
 
         private bool HasAPawnInDestinyPosition(int selectedPawnPositionInArray)
         {
-            switch (selectedPawnPositionInArray)
-            {
+            //switch (selectedPawnPositionInArray)
+            //{
                 
-            }
+            //}
             return false;
         }
 
         #endregion
 
-        private void MovePawn(int selectedPawnPosition, int pawnDestinyPosition)
+        private void MovePawn(Piece piece, int[] pieceDestiny)
         {
-            //Board[selectedPawnPosition, 1] = null;
-            //Board[pawnDestinyPosition, 1] = SelectedPawn;
-            //SelectedPawn = null;
+            Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = null;
+            piece.XPositionOnBoard = pieceDestiny[0];
+            piece.YPositionOnBoard = pieceDestiny[1];
+            Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = piece;
         }
 
         private void SwitchActivePlayer()
         {
-            //if (ActivePlayer == "Player")
-            //{
-            //    ActivePlayer = "Bot";
-            //}
-            //else if (ActivePlayer == "Bot")
-            //{
-            //    ActivePlayer = "Player";
-            //}
+            if (ActivePlayer == Player1)
+            {
+                ActivePlayer = Player2;
+            }
+            else if (ActivePlayer == Player2)
+            {
+                ActivePlayer = Player1;
+            }
         }
 
         private void CheckWinner()

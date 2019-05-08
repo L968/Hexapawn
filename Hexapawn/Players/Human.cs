@@ -8,7 +8,7 @@ namespace Hexapawn.Players
 {
     public class Human : Player
     {
-        public static string[] GetMove(string pawn, string position)
+        public string[] GetMove(string pawn, string position)
         {
             return new string[2] { pawn, position };
         }

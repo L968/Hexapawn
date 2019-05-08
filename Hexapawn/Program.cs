@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Hexapawn.Players;
 
 namespace Hexapawn
 {
@@ -27,7 +28,7 @@ namespace Hexapawn
 
                 try
                 {
-                   // game.Move(Player.GetMove(pawn, position));
+                   game.Move(game.Player1.GetMove(pawn, position));
 
                     if (game.Winner != null)
                     {
@@ -44,7 +45,7 @@ namespace Hexapawn
                 DrawBoard(game.Board);
                 Console.WriteLine("O bot está pensando...");
                 Thread.Sleep(1500);
-               // game.Move(Bot.GetMove(game.Board));
+                game.Move(game.Player2.GetMove());
 
             } while (game.Winner == null);
         }

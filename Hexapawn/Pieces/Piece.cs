@@ -1,4 +1,5 @@
-﻿using Hexapawn.Players;
+﻿using Hexapawn.GameComponents;
+using Hexapawn.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,15 @@ namespace Hexapawn.Pieces
         public int YPositionOnBoard { get; set; }
 
         public Player Owner { get; set; }
+
+        protected Piece(int xPosition, int yPosition, Player owner, Board board, string name)
+        {
+            XPositionOnBoard = xPosition;
+            YPositionOnBoard = yPosition;
+            Owner = owner;
+            Name = name;
+
+            board.BoardArray[XPositionOnBoard, YPositionOnBoard] = this;
+        }
     }
 }

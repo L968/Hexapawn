@@ -8,7 +8,7 @@ namespace Hexapawn.Players
 {
     public class Bot : Player
     {
-        public static string[] GetMove(string[,] board)
+        public string[] GetMove()
         {
             return new string[2] {"K1", "A2"};
         }

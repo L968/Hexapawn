@@ -10,14 +10,9 @@ namespace Hexapawn.Pieces
 {
     public class Pawn : Piece
     {
-        public Pawn(int xPosition, int yPosition, Player owner, Board board, string name)
+        public Pawn(int xPosition, int yPosition, Player owner, Board board, string name) : base(xPosition, yPosition, owner, board, name)
         {
-            XPositionOnBoard = xPosition;
-            YPositionOnBoard = yPosition;
-            Owner = owner;
-            Name = name;
-
-            board.BoardArray[XPositionOnBoard, YPositionOnBoard] = this;
+            
         }
     }
 }
