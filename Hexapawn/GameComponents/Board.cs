@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hexapawn.GameComponents
 {
-    class Board
+    public class Board
     {
         // A array of pieces representing the board
         public Piece[,] BoardArray { get; set; }
@@ -33,13 +33,28 @@ namespace Hexapawn.GameComponents
                +--------------+
              */
 
-            Piece pawn1 = new Pawn(2, 0, Game.Player1); // A3
-            Piece pawn2 = new Pawn(2, 1, Game.Player1); // B3
-            Piece pawn3 = new Pawn(2, 2, Game.Player1); // C3
+            Piece pawn1 = new Pawn(2, 0, Game.Player1, this, "P1"); // A3
+            Piece pawn2 = new Pawn(2, 1, Game.Player1, this, "P2"); // B3
+            Piece pawn3 = new Pawn(2, 2, Game.Player1, this, "P3"); // C3
 
-            Piece pawn4 = new Pawn(0, 0, Game.Player2); // A1
-            Piece pawn5 = new Pawn(0, 1, Game.Player2); // B1
-            Piece pawn6 = new Pawn(0, 2, Game.Player2); // C1
+            Piece pawn4 = new Pawn(0, 0, Game.Player2, this, "K1"); // A1
+            Piece pawn5 = new Pawn(0, 1, Game.Player2, this, "K2"); // B1
+            Piece pawn6 = new Pawn(0, 2, Game.Player2, this, "K3"); // C1
+        }
+
+        public string this[int row, int column]
+        {
+            get
+            {
+                if (BoardArray[row, column] == null)
+                {
+                    return "  ";
+                }
+                else
+                {
+                    return BoardArray[row, column].Name; 
+                }
+            }
         }
 
     }
