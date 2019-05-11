@@ -9,7 +9,7 @@ namespace Hexapawn.Players
 {
     public class Bot : Player
     {
-        public Bot(Color color) : base(color)
+        public Bot(Game game, Color color) : base(game, color)
         {
 
         }

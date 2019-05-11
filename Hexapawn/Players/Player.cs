@@ -9,12 +9,14 @@ namespace Hexapawn.Players
 {
     public abstract class Player
     {
-        public Color Color { get; set; }
+        public Game Game { get; private set; }
+        public Color Color { get; private set; }
 
-        protected Player(Color color)
+        protected Player(Game game, Color color)
         {
+            Game = game;
             Color = color;
         }
-        // Class create only for inheritance
+
     }
 }
