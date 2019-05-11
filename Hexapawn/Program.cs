@@ -54,11 +54,11 @@ namespace Hexapawn
         {
             Console.WriteLine("      a    b    c");
             Console.WriteLine("   +--------------+");
-            Console.WriteLine($" 1 | {board.GetPieceNameOnBoard(0, 0)} | {board.GetPieceNameOnBoard(0, 1)} | {board.GetPieceNameOnBoard(0, 2)} |");
+            Console.WriteLine($" 1 | {board[0, 0]} | {board[0, 1]} | {board[0, 2]} |");
             Console.WriteLine("   +--------------+");
-            Console.WriteLine($" 2 | {board.GetPieceNameOnBoard(1, 0)} | {board.GetPieceNameOnBoard(1, 1)} | {board.GetPieceNameOnBoard(1, 2)} |");
+            Console.WriteLine($" 2 | {board[1, 0]} | {board[1, 1]} | {board[1, 2]} |");
             Console.WriteLine("   +--------------+");
-            Console.WriteLine($" 3 | {board.GetPieceNameOnBoard(2, 0)} | {board.GetPieceNameOnBoard(2, 1)} | {board.GetPieceNameOnBoard(2, 2)} |");
+            Console.WriteLine($" 3 | {board[2, 0]} | {board[2, 1]} | {board[2, 2]} |");
             Console.WriteLine("   +--------------+\n");
         }
 

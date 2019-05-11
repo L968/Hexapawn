@@ -16,62 +16,26 @@ namespace Hexapawn.Pieces
             
         }
 
-        protected override void IsValidPath(int xDestinyPosition, int yDestinyPosition)
+        protected override void IsValidPath(int xPosition, int yPosition)
         {
-            if (PawnCanMoveForward(xDestinyPosition, yDestinyPosition))
-            {
-                return;
-            }
-
-            if (PawnCanCapture(xDestinyPosition, yDestinyPosition))
+            if (IsPawnMovingForward(xPosition, yPosition))
             {
 
-            }
-
-            throw new MoveException("Movimento inválido");
+            }  
         }
 
-        private bool PawnCanMoveForward(int xDestinyPosition, int yDestinyPosition)
+        private bool IsPawnMovingForward(int xPosition, int yPosition)
         {
             switch (Owner.Color)
             {
                 case Color.WHITE:
-                    // Checking if it's moving forward
-                    if(XPositionOnBoard - 1 == xDestinyPosition && YPositionOnBoard == yDestinyPosition)
-                    {
-                        // Checking if the destiny position has a pawn in front of this pawn
-                        return Owner.Game.Board[xDestinyPosition, yDestinyPosition] == null;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return XPositionOnBoard - 1 == xPosition && YPositionOnBoard == yPosition;
                 case Color.BLACK:
-                    if (XPositionOnBoard + 1 == xDestinyPosition && YPositionOnBoard == yDestinyPosition)
-                    {
-                        return Owner.Game.Board[xDestinyPosition, yDestinyPosition] == null;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return XPositionOnBoard + 1 == xPosition && YPositionOnBoard == yPosition;
                 default:
                     throw new MoveException("Cor da peça não encontrada");
             }
+            
         }
-
-        private bool PawnCanCapture(int xDestinyPosition, int yDestinyPosition)
-        {
-            switch (Owner.Color)
-            {
-                case Color.WHITE:
-                    break;
-                case Color.BLACK:
-                    break;
-                default:
-                    break;
-            }
-        }
-
     }
 }
