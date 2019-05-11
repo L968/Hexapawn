@@ -10,11 +10,12 @@ namespace Hexapawn.Pieces
 {
     public abstract class Piece
     {
-        public string Name { get; set; }
+        public string Name { get; private set; }
+        public Player Owner { get; private set; }
+
         public int XPositionOnBoard { get; set; }
         public int YPositionOnBoard { get; set; }
 
-        public Player Owner { get; private set; }
 
         protected Piece(int xPosition, int yPosition, Player owner, Board board, string name)
         {

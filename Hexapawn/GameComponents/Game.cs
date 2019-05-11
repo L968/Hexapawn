@@ -21,8 +21,8 @@ namespace Hexapawn.GameComponents
         public Game()
         {
             Turn = 1;
-            Player1 = new Human(Color.WHITE);
-            Player2 = new Bot(Color.BLACK);
+            Player1 = new Human(this, Color.WHITE);
+            Player2 = new Bot(this, Color.BLACK);
             Board = new Board(this);
             ActivePlayer = Player1; // First turn
 

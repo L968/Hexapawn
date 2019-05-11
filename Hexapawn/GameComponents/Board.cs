@@ -43,18 +43,32 @@ namespace Hexapawn.GameComponents
         }
 
         /// <summary>
-        /// Returns the name atribute of the Piece object in the specified position
-        /// Used by Program.DrawBoard
+        /// Board indexer to return or set the object Piece in the specified position
         /// </summary>
-        /// <param name="row">row index</param>
-        /// <param name="column">column index</param>
+        /// <param name="row">Row number in BoadArray</param>
+        /// <param name="column">Column number in BoardArray</param>
         /// <returns></returns>
-        public string this[int row, int column]
+        public Piece this[int row, int column]
         {
             get
             {
-                return BoardArray[row, column] == null ? "  " : BoardArray[row, column].Name;
+                return BoardArray[row, column];
             }
+            set
+            {
+                BoardArray[row, column] = value;
+            }
+        }
+
+        /// <summary>
+        /// Returns the Piece.Name string on the specified BoardArray position. If the object is null, it returns "  "
+        /// </summary>
+        /// <param name="row">Row number in BoadArray</param>
+        /// <param name="column">>Column number in BoardArray</param>
+        /// <returns></returns>
+        public string GetPieceNameOnBoard(int row, int column)
+        {
+            return BoardArray[row, column] == null ? "  " : BoardArray[row, column].Name;
         }
 
     }
