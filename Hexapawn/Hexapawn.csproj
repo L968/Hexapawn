@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameComponents\Board.cs" />
+    <Compile Include="GameComponents\Color.cs" />
     <Compile Include="Players\Bot.cs" />
     <Compile Include="GameComponents\Game.cs" />
     <Compile Include="Exceptions\MoveException.cs" />

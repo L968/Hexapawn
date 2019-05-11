@@ -14,7 +14,7 @@ namespace Hexapawn.Pieces
         public int XPositionOnBoard { get; set; }
         public int YPositionOnBoard { get; set; }
 
-        public Player Owner { get; set; }
+        public Player Owner { get; private set; }
 
         protected Piece(int xPosition, int yPosition, Player owner, Board board, string name)
         {
@@ -25,5 +25,8 @@ namespace Hexapawn.Pieces
 
             board.BoardArray[XPositionOnBoard, YPositionOnBoard] = this;
         }
+
+        protected abstract void IsValidPath(int xPosition, int yPosition);
+
     }
 }

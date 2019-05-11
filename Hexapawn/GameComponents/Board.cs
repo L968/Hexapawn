@@ -44,6 +44,7 @@ namespace Hexapawn.GameComponents
 
         /// <summary>
         /// Returns the name atribute of the Piece object in the specified position
+        /// Used by Program.DrawBoard
         /// </summary>
         /// <param name="row">row index</param>
         /// <param name="column">column index</param>

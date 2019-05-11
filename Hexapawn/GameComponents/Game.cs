@@ -21,8 +21,8 @@ namespace Hexapawn.GameComponents
         public Game()
         {
             Turn = 1;
-            Player1 = new Human();
-            Player2 = new Bot();
+            Player1 = new Human(Color.WHITE);
+            Player2 = new Bot(Color.BLACK);
             Board = new Board(this);
             ActivePlayer = Player1; // First turn
 
@@ -102,11 +102,7 @@ namespace Hexapawn.GameComponents
 
         private bool IsLegalMove(Piece piece, int[] pieceDestiny)
         {
-            // Legal moves
-            //IsMovingToTheSamePosition(selectedPawnPositionInArray, pawnDestinyPositionInArray); //ok
-            //IsMovingSideways(selectedPawnPositionInArray, pawnDestinyPositionInArray); // arrumar default
-            //IsMovingBackwards(selectedPawn, selectedPawnPositionInArray, pawnDestinyPositionInArray);
-            //IsMovingForward();
+            
 
 
             //IsDiagonalMove(selectedPawnPositionInArray, pawnDestinyPositionInArray); // arrumar default
