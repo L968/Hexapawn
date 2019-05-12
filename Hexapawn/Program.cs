@@ -15,39 +15,82 @@ namespace Hexapawn
     {
         static void Main(string[] args)
         {
-            // New game starting with default positions.
-            Game game = new Game();
+            string playAgain = "N";
 
+            // Play again loop
             do
             {
-                DrawBoard(game.Board);
-                Console.Write("Escolha a peça que será movimentada (P1, P2, P3): ");
-                string pawn = Console.ReadLine().ToUpper().Trim();
-                Console.Write("Escolha o local de destino da peça: ");
-                string position = Console.ReadLine().ToUpper().Trim();
+                // New game starting with default positions.
+                Game game = new Game();
 
-                try
+                do
                 {
-                   game.Move(game.Player1.GetMove(pawn, position));
+                    // Player 1 Move loop
+                    while (true)
+                    {
+                        DrawBoard(game.Board);
+                        Console.Write("Escolha a peça que será movimentada (P1, P2, P3): ");
+                        string pawn = Console.ReadLine().ToUpper().Trim();
+                        Console.Write("Escolha o local de destino da peça: ");
+                        string position = Console.ReadLine().ToUpper().Trim();
+
+                        try
+                        {
+                            game.Move(game.Player1.GetMove(pawn, position));
+                        }
+                        catch (MoveException ex)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(ex.Message);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            continue;
+                        }
+                        break;
+                    }
 
                     if (game.Winner != null)
                     {
                         DrawBoard(game.Board);
                         break;
                     }
-                }
-                catch (MoveException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    continue;
-                }
-                
-                DrawBoard(game.Board);
-                Console.WriteLine("O bot está pensando...");
-                Thread.Sleep(1500);
-                game.Move(game.Player2.GetMove());
 
-            } while (game.Winner == null);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("O bot está pensando...");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Thread.Sleep(1300);
+
+                    // Player 2 Move loop
+                    while (true)
+                    {
+                        // DrawBoard(game.Board);*
+                        try
+                        {
+                            game.Move(game.Player2.GetMove());
+                        }
+                        catch (MoveException ex)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(ex.Message);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            continue;
+                        }
+                        break;
+                    }
+
+                    if (game.Winner != null)
+                    {
+                        DrawBoard(game.Board);
+                        break;
+                    }
+
+                } while (game.Winner == null);
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"O vencedor é o {game.Winner.Name}! Deseja jogar novamente?(Digite \"S\"): ");
+                Console.ForegroundColor = ConsoleColor.White;
+                playAgain = Console.ReadLine().ToUpper().Trim();
+
+            } while (playAgain == "S");
         }
 
         private static void DrawBoard(Board board)

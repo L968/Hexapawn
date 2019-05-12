@@ -27,7 +27,7 @@ namespace Hexapawn.Pieces
             board.BoardArray[XPositionOnBoard, YPositionOnBoard] = this;
         }
 
-        protected abstract void IsValidPath(int xPosition, int yPosition);
+        public abstract bool IsValidPath(int xPosition, int yPosition);
 
     }
 }

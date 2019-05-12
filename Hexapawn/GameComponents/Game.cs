@@ -21,8 +21,8 @@ namespace Hexapawn.GameComponents
         public Game()
         {
             Turn = 1;
-            Player1 = new Human(this, Color.WHITE);
-            Player2 = new Bot(this, Color.BLACK);
+            Player1 = new Human(this, Color.WHITE, "Humano");
+            Player2 = new Bot(this, Color.BLACK, "Bot");
             Board = new Board(this);
             ActivePlayer = Player1; // First turn
 
@@ -30,34 +30,49 @@ namespace Hexapawn.GameComponents
 
         public void Move(string[] move)
         {
-            Piece selectedPiece = GetPieceByPositionInBoardArray(move[0]); // e.g: P1, K1
+            Piece piece = GetPieceByPositionInBoardArray(move[0]); // e.g: P1, K1
             int[] pieceDestiny = GetTilePositionInBoardArray(move[1]); // e.g: A2, B2
 
-            IsActivePlayerThePieceOwner(selectedPiece);
+            IsActivePlayerThePieceOwner(piece);
+            MovePiece(piece, pieceDestiny);
+            CheckWinner();
+            SwitchActivePlayer();
+        }
 
-            if (IsLegalMove(selectedPiece, pieceDestiny))
+        /// <summary>
+        /// Checking if the Active Player is the Piece Owner
+        /// </summary>
+        /// <param name="piece"></param>
+        private void IsActivePlayerThePieceOwner(Piece piece)
+        {
+            if (piece.Owner == ActivePlayer)
             {
-                MovePawn(selectedPiece, pieceDestiny);
-                CheckWinner();
-                SwitchActivePlayer();
+                return;
             }
             else
             {
-                throw new MoveException("Movimento inválido.");
+                throw new MoveException("Você não é o dono desta peça");
             }
-            
         }
 
-        private Piece GetPieceByPositionInBoardArray(string pawn)
+        /// <summary>
+        /// Returns a existing Piece object on the BoardArray passing the piece's name inputed at the console as argument
+        /// </summary>
+        /// <param name="piece">Piece name</param>
+        /// <returns></returns>
+        private Piece GetPieceByPositionInBoardArray(string piece)
         {
+            // Checking name for every EXISTING piece on BoardArray
             foreach (Piece item in Board.BoardArray)
             {
-                if (item == null) // Avoiding null reference exception in order to the foreach statement runs completely through the array*
+                // Avoiding null reference exception in order to the foreach statement runs completely through the array*
+                if (item == null)
                 {
                     continue;
                 }
 
-                if (pawn == item.Name)
+                // Check if the inputed piece name is equal to the actual item.Name
+                if (piece.Equals(item.Name))
                 {
                     return Board.BoardArray[item.XPositionOnBoard, item.YPositionOnBoard];
                 }
@@ -65,8 +80,14 @@ namespace Hexapawn.GameComponents
             throw new MoveException("Peça não encontrada");
         }
 
+        /// <summary>
+        /// Returns a int[] containing the XPositionOnBoardArray and YPositionOnBoardArray passing the position name as argument
+        /// </summary>
+        /// <param name="tile">Position name e.g. A1, B2</param>
+        /// <returns></returns>
         private int[] GetTilePositionInBoardArray(string tile)
         {
+            // Needs to be flexible enough to accept multiple board sizes :(
             switch (tile)
             {
                 case "A1": return new int[2] { 0, 0 };
@@ -82,51 +103,15 @@ namespace Hexapawn.GameComponents
             }
         }
 
-        #region Basic Validations
-
-        private void IsActivePlayerThePieceOwner(Piece piece)
+        private void MovePiece(Piece piece, int[] pieceDestiny)
         {
-            if (piece.Owner == ActivePlayer)
+            if (piece.IsValidPath(pieceDestiny[0], pieceDestiny[1]))
             {
-                return;
+                Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = null;
+                piece.XPositionOnBoard = pieceDestiny[0];
+                piece.YPositionOnBoard = pieceDestiny[1];
+                Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = piece;
             }
-            else
-            {
-                throw new MoveException("Seleciona apenas suas peças");
-            }
-        }
-
-        #endregion
-
-        #region LegalMove Validations
-
-        private bool IsLegalMove(Piece piece, int[] pieceDestiny)
-        {
-            
-
-
-            //IsDiagonalMove(selectedPawnPositionInArray, pawnDestinyPositionInArray); // arrumar default
-            //HasAPawnInDestinyPosition(selectedPawnPositionInArray);
-            return true;
-        }
-
-        private bool HasAPawnInDestinyPosition(int selectedPawnPositionInArray)
-        {
-            //switch (selectedPawnPositionInArray)
-            //{
-                
-            //}
-            return false;
-        }
-
-        #endregion
-
-        private void MovePawn(Piece piece, int[] pieceDestiny)
-        {
-            Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = null;
-            piece.XPositionOnBoard = pieceDestiny[0];
-            piece.YPositionOnBoard = pieceDestiny[1];
-            Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = piece;
         }
 
         private void SwitchActivePlayer()
@@ -143,7 +128,52 @@ namespace Hexapawn.GameComponents
 
         private void CheckWinner()
         {
+            switch (ActivePlayer.Color)
+            {
+                case Color.WHITE:
+                    foreach (Piece item in Board.BoardArray)
+                    {
+                        // Avoiding null reference exception in order to the foreach statement runs completely through the array*
+                        if (item == null)
+                        {
+                            continue;
+                        }
 
+                        // Piece color has to be the same as it's owner
+                        if (item.Owner.Color == Color.WHITE)
+                        {
+                            // Cheking when a pawn of White Team crossed to the other side of the board
+                            if (item.XPositionOnBoard == 0)
+                            {
+                                Winner = ActivePlayer;
+                            }
+                        }
+
+                    }
+                    break;
+                case Color.BLACK:
+                    foreach (Piece item in Board.BoardArray)
+                    {
+                        // Avoiding null reference exception in order to the foreach statement runs completely through the array*
+                        if (item == null)
+                        {
+                            continue;
+                        }
+
+                        // Piece color has to be the same as it's owner
+                        if (item.Owner.Color == Color.BLACK)
+                        {
+                            // Cheking when a pawn of Black Team crossed to the other side of the board
+                            if (item.XPositionOnBoard == 2)
+                            {
+                                Winner = ActivePlayer;
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    throw new MoveException("Cor de time não encontrada");
+            }
         }
     }
 }
