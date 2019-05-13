@@ -16,7 +16,7 @@ namespace Hexapawn.Players
 
         public string[] GetMove(string pawn, string position)
         {
-            return new string[2] { pawn, position };
+            return new string[2] {pawn, position};
         }
     }
 }

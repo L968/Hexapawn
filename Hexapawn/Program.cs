@@ -15,20 +15,23 @@ namespace Hexapawn
     {
         static void Main(string[] args)
         {
-            string playAgain = "N";
+            string playAgain;
 
             // Play again loop
             do
             {
                 // New game starting with default positions.
                 Game game = new Game();
+                playAgain = "N";
+                Console.Clear();
+                DrawBoard(game.Board);
 
-                do
+                // Game loop
+                while (true)
                 {
                     // Player 1 Move loop
                     while (true)
                     {
-                        DrawBoard(game.Board);
                         Console.Write("Escolha a peça que será movimentada (P1, P2, P3): ");
                         string pawn = Console.ReadLine().ToUpper().Trim();
                         Console.Write("Escolha o local de destino da peça: ");
@@ -37,56 +40,60 @@ namespace Hexapawn
                         try
                         {
                             game.Move(game.Player1.GetMove(pawn, position));
+                            DrawBoard(game.Board);
+                            break;
                         }
                         catch (MoveException ex)
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine(ex.Message);
-                            Console.ForegroundColor = ConsoleColor.White;
+                            MoveExpectionMessage(ex.Message);
                             continue;
                         }
-                        break;
+                        catch (Exception ex)
+                        {
+                            ExpectionMessage(ex.Message);
+                            continue;
+                        }
                     }
 
                     if (game.Winner != null)
                     {
-                        DrawBoard(game.Board);
                         break;
                     }
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("O bot está pensando...");
                     Console.ForegroundColor = ConsoleColor.White;
-                    Thread.Sleep(1300);
+                    Thread.Sleep(1000);
 
                     // Player 2 Move loop
                     while (true)
                     {
-                        // DrawBoard(game.Board);*
                         try
                         {
                             game.Move(game.Player2.GetMove());
+                            DrawBoard(game.Board);
+                            break;
                         }
                         catch (MoveException ex)
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine(ex.Message);
-                            Console.ForegroundColor = ConsoleColor.White;
+                            MoveExpectionMessage(ex.Message);
                             continue;
                         }
-                        break;
+                        catch (Exception ex)
+                        {
+                            ExpectionMessage(ex.Message);
+                            continue;
+                        }
                     }
 
                     if (game.Winner != null)
                     {
-                        DrawBoard(game.Board);
                         break;
                     }
-
-                } while (game.Winner == null);
+                }
 
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine($"O vencedor é o {game.Winner.Name}! Deseja jogar novamente?(Digite \"S\"): ");
+                Console.Write($"O vencedor é o {game.Winner.Name}! Deseja jogar novamente?(Digite \"S\"): ");
                 Console.ForegroundColor = ConsoleColor.White;
                 playAgain = Console.ReadLine().ToUpper().Trim();
 
@@ -103,6 +110,22 @@ namespace Hexapawn
             Console.WriteLine("   +--------------+");
             Console.WriteLine($" 3 | {board.GetPieceNameOnBoard(2, 0)} | {board.GetPieceNameOnBoard(2, 1)} | {board.GetPieceNameOnBoard(2, 2)} |");
             Console.WriteLine("   +--------------+\n");
+        }
+
+        private static void MoveExpectionMessage(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        private static void ExpectionMessage(string message)
+        {
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine(message);
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
     }
