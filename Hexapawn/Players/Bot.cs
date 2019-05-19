@@ -14,33 +14,37 @@ namespace Hexapawn.Players
         // Getting all pieces
         private Random Random { get; set; }
         private int RandomSelectedIndex { get; set; }
-        private List<string> Pieces { get; set; }
+        private List<string> BotPieces { get; set; } // List containing all bot pieces in the current state of the game
 
         public Bot(Game game, Color color, string name) : base(game, color, name)
         {
-            Pieces = new List<string>();
+            BotPieces = new List<string>();
             Random = new Random();
         }
 
+        /// <summary>
+        /// Generates the move from it's json file
+        /// </summary>
+        /// <returns></returns>
         public string[] GetMove()
         {
             GetPieces();
 
             string[] output = new string[2];
 
-            RandomSelectedIndex = Random.Next(Pieces.Count);
-            output[0] = Pieces[RandomSelectedIndex];
+            RandomSelectedIndex = Random.Next(BotPieces.Count);
+            output[0] = BotPieces[RandomSelectedIndex];
 
             RandomSelectedIndex = Random.Next(Game.Board.BoardArray.Length);
             output[1] = GetPositionNameByIndex(RandomSelectedIndex);
 
-            Pieces.Clear();
+            BotPieces.Clear(); 
             return output;
 
         }
 
         /// <summary>
-        /// Populates the Pieces List reading all pieces on board
+        /// Populates the BotPieces List with all bot pieces in the actual state of the game
         /// </summary>
         private void GetPieces()
         {
@@ -53,7 +57,7 @@ namespace Hexapawn.Players
 
                 if (item.Owner == this)
                 {
-                    Pieces.Add(item.Name);
+                    BotPieces.Add(item.Name);
                 }
             }
         }
@@ -62,7 +66,6 @@ namespace Hexapawn.Players
         /// Returns the position name from the board in all 3x3 possible positions
         /// </summary>
         /// <param name="index"></param>
-        /// <returns></returns>
         private string GetPositionNameByIndex(int index)
         {
             switch (index)
@@ -79,6 +82,23 @@ namespace Hexapawn.Players
                 default:
                     throw new IndexOutOfRangeException("Indice inválido");
             }
+        }
+
+        /// <summary>
+        /// When the bot performs a unlearned move, it will add to his move json file
+        /// </summary>
+        /// <param name="move"></param>
+        private void AddMoveToJsonFile(string[] move)
+        {
+
+        }
+
+        /// <summary>
+        /// When the bot performs a move that would cause his lost, it will set the move chance to 0
+        /// </summary>
+        private void SetMoveChanceToZero()
+        {
+
         }
     }
 }

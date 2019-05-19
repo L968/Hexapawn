@@ -1,0 +1,50 @@
+﻿{
+	"Turn 1":
+	{
+			
+	},
+	"Turn 2":
+	{
+		"BBBWEEEWW":
+		{
+			"Move01":
+			{
+				"Chance": 1,
+				"Move": ["B1","A2"]
+			},
+			"Move02":
+			{
+				"Chance": 1,
+				"Move": ["B1","B2"]
+			}
+		},
+		"BBBEWEWEW":
+		{
+			"Move01":
+			{
+				"Chance": 1,
+				"Move": ["A1","A2"]
+			}
+		}
+	},
+	"Turn 3":
+	{
+			
+	},
+	"Turn 4":
+	{
+			
+	},
+	"Turn 5":
+	{
+			
+	},
+	"Turn 6":
+	{
+			
+	},
+	"Turn 7":
+	{
+			
+	}
+}

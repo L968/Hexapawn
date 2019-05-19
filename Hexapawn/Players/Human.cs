@@ -18,5 +18,6 @@ namespace Hexapawn.Players
         {
             return new string[2] {pawn, position};
         }
+
     }
 }

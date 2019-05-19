@@ -15,14 +15,15 @@ namespace Hexapawn.GameComponents
         public Bot Player2 { get; private set; } // Setting that player2 is a Bot
         public Player Winner { get; private set; }
         private Player ActivePlayer { get; set; }
+        private Player InactivePlayer { get; set; }
         public Board Board { get; private set; }
         public int Turn { get; private set; }
 
         public Game()
         {
             Turn = 1;
-            Player1 = new Human(this, Color.WHITE, "Humano");
-            Player2 = new Bot(this, Color.BLACK, "Bot");
+            Player1 = new Human(this, Color.WHITE, "Humano"); // Player 1 HAS to be WHITE, do not change it
+            Player2 = new Bot(this, Color.BLACK, "Bot"); // // Player 2 HAS to be BLACK, do not change it
             Board = new Board(this);
             ActivePlayer = Player1; // First turn
 
@@ -119,21 +120,32 @@ namespace Hexapawn.GameComponents
             if (ActivePlayer == Player1)
             {
                 ActivePlayer = Player2;
+                InactivePlayer = Player1;
             }
             else if (ActivePlayer == Player2)
             {
                 ActivePlayer = Player1;
+                InactivePlayer = Player2;
             }
+            Turn++;
         }
 
         private void CheckWinner()
         {
+            #region Win Condition 1 - Player doesn't have any pieces left
+            if (!InactivePlayer.HasPieces())
+            {
+                Winner = ActivePlayer;
+            }
+            #endregion
+
+            #region Win Condition 2 - Cross the board
             switch (ActivePlayer.Color)
             {
                 case Color.WHITE:
                     foreach (Piece item in Board.BoardArray)
                     {
-                        // Avoiding null reference exception in order to the foreach statement runs completely through the array*
+                        // Avoiding null reference exception
                         if (item == null)
                         {
                             continue;
@@ -148,13 +160,12 @@ namespace Hexapawn.GameComponents
                                 Winner = ActivePlayer;
                             }
                         }
-
                     }
                     break;
                 case Color.BLACK:
                     foreach (Piece item in Board.BoardArray)
                     {
-                        // Avoiding null reference exception in order to the foreach statement runs completely through the array*
+                        // Avoiding null reference exceptio
                         if (item == null)
                         {
                             continue;
@@ -171,9 +182,9 @@ namespace Hexapawn.GameComponents
                         }
                     }
                     break;
-                default:
-                    throw new MoveException("Cor de time não encontrada");
             }
+            #endregion
         }
+
     }
 }

@@ -71,5 +71,40 @@ namespace Hexapawn.GameComponents
             return BoardArray[row, column] == null ? "  " : BoardArray[row, column].Name;
         }
 
+        /// <summary>
+        /// Converts the board array into a string to be used in the move json file
+        /// </summary>
+        /// <returns></returns>
+        public string ToJson()
+        {
+            string output = "";
+
+            foreach (Piece item in BoardArray)
+            {
+                if (item == null)
+                {
+                    output += "E";
+                    continue;
+                }
+
+                switch (item.Owner.Color)
+                {
+                    case Color.WHITE:
+                        output += "W";
+                        break;
+                    case Color.BLACK:
+                        output += "B";
+                        break;
+                }
+            }
+
+            if (output.Length != 9)
+            {
+                throw new Exception("Erro ao transformar tabuleiro em Json\n");
+            }
+
+            return output;
+        }
+
     }
 }
