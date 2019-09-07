@@ -26,11 +26,13 @@ namespace Hexapawn.GameComponents
              3 | P1 | P2 | P3 |
                +--------------+
              */
-
+            
+            //Setting Player1 pieces
             var pawn1 = new Pawn(2, 0, Game.Player1, this, "P1"); // A3
             var pawn2 = new Pawn(2, 1, Game.Player1, this, "P2"); // B3
             var pawn3 = new Pawn(2, 2, Game.Player1, this, "P3"); // C3
 
+            //Setting Player2 pieces
             var pawn4 = new Pawn(0, 0, Game.Player2, this, "K1"); // A1
             var pawn5 = new Pawn(0, 1, Game.Player2, this, "K2"); // B1
             var pawn6 = new Pawn(0, 2, Game.Player2, this, "K3"); // C1
