@@ -32,9 +32,9 @@ namespace Hexapawn
                     // Player 1 Move loop
                     while (true)
                     {
-                        Console.Write("Escolha a peça que será movimentada (P1, P2, P3): ");
+                        Console.Write("Choose a piece to be moved (P1, P2, P3): ");
                         string pawn = Console.ReadLine().ToUpper().Trim();
-                        Console.Write("Escolha o local de destino da peça: ");
+                        Console.Write("Choose the piece destiny: ");
                         string position = Console.ReadLine().ToUpper().Trim();
 
                         try
@@ -45,12 +45,12 @@ namespace Hexapawn
                         }
                         catch (MoveException ex)
                         {
-                            MoveExpectionMessage(ex.Message);
+                            ShowMoveExpectionMessage(ex.Message);
                             continue;
                         }
                         catch (Exception ex)
                         {
-                            ExpectionMessage(ex.Message);
+                            ShowExpectionMessage(ex.Message);
                             continue;
                         }
                     }
@@ -76,12 +76,12 @@ namespace Hexapawn
                         }
                         catch (MoveException ex)
                         {
-                            MoveExpectionMessage(ex.Message);
+                            ShowMoveExpectionMessage(ex.Message);
                             continue;
                         }
                         catch (Exception ex)
                         {
-                            ExpectionMessage(ex.Message);
+                            ShowExpectionMessage(ex.Message);
                             continue;
                         }
                     }
@@ -112,14 +112,14 @@ namespace Hexapawn
             Console.WriteLine("   +--------------+\n");
         }
 
-        private static void MoveExpectionMessage(string message)
+        private static void ShowMoveExpectionMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
             Console.ForegroundColor = ConsoleColor.White;
         }
 
-        private static void ExpectionMessage(string message)
+        private static void ShowExpectionMessage(string message)
         {
             Console.BackgroundColor = ConsoleColor.Red;
             Console.ForegroundColor = ConsoleColor.Black;

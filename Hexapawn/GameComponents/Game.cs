@@ -11,22 +11,22 @@ namespace Hexapawn.GameComponents
 {
     public class Game
     {
+        public Board Board { get; private set; }
         public Human Player1 { get; private set; } // Setting that player1 is a Human
         public Bot Player2 { get; private set; } // Setting that player2 is a Bot
         public Player Winner { get; private set; }
-        private Player ActivePlayer { get; set; }
-        private Player InactivePlayer { get; set; }
-        public Board Board { get; private set; }
         public int Turn { get; private set; }
+        private Player ActivePlayer { get; set; }
+        private Player InactivePlayer { get; set; }  
 
         public Game()
         {
             Turn = 1;
-            Player1 = new Human(this, Color.WHITE, "Humano"); // Player 1 HAS to be WHITE, do not change it
-            Player2 = new Bot(this, Color.BLACK, "Bot"); // // Player 2 HAS to be BLACK, do not change it
             Board = new Board(this);
+            Player1 = new Human(this, Color.WHITE, "Human"); // Player 1 HAS to be WHITE, do not change it
+            Player2 = new Bot(this, Color.BLACK, "Bot"); // // Player 2 HAS to be BLACK, do not change it
             ActivePlayer = Player1; // First turn
-
+            InactivePlayer = Player2;
         }
 
         public void Move(string[] move)
@@ -38,12 +38,13 @@ namespace Hexapawn.GameComponents
             MovePiece(piece, pieceDestiny);
             CheckWinner();
             SwitchActivePlayer();
+            Turn++;
         }
 
         /// <summary>
         /// Checking if the Active Player is the Piece Owner
         /// </summary>
-        /// <param name="piece"></param>
+        /// <param name="piece">The piece to be moved</param>
         private void IsActivePlayerThePieceOwner(Piece piece)
         {
             if (piece.Owner == ActivePlayer)
@@ -52,7 +53,7 @@ namespace Hexapawn.GameComponents
             }
             else
             {
-                throw new MoveException("Você não é o dono desta peça");
+                throw new MoveException("You are not the owner of this piece!");
             }
         }
 
@@ -127,7 +128,6 @@ namespace Hexapawn.GameComponents
                 ActivePlayer = Player1;
                 InactivePlayer = Player2;
             }
-            Turn++;
         }
 
         private void CheckWinner()
@@ -136,6 +136,7 @@ namespace Hexapawn.GameComponents
             if (!InactivePlayer.HasPieces())
             {
                 Winner = ActivePlayer;
+                return;
             }
             #endregion
 

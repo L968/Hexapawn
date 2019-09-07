@@ -1,10 +1,5 @@
 ﻿using Hexapawn.GameComponents;
 using Hexapawn.Players;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hexapawn.Pieces
 {
@@ -24,7 +19,7 @@ namespace Hexapawn.Pieces
             Owner = owner;
             Name = name;
 
-            board.BoardArray[XPositionOnBoard, YPositionOnBoard] = this;
+            board.BoardArray[XPositionOnBoard, YPositionOnBoard] = this; // Self allocating on the board
         }
 
         public abstract bool IsValidPath(int xPosition, int yPosition);

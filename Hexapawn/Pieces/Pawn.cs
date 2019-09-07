@@ -58,7 +58,7 @@ namespace Hexapawn.Pieces
                         return false;
                     }
                 default:
-                    throw new MoveException("Cor da peça não encontrada");
+                    throw new MoveException("Piece color not found");
             }
         }
 

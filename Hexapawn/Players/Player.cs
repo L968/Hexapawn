@@ -1,10 +1,5 @@
 ﻿using Hexapawn.GameComponents;
 using Hexapawn.Pieces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hexapawn.Players
 {
@@ -42,6 +37,5 @@ namespace Hexapawn.Players
 
             return pieceQuantity == 0;
         }
-
     }
 }

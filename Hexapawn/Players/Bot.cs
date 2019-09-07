@@ -3,61 +3,55 @@ using Hexapawn.Pieces;
 using Hexapawn.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hexapawn.Players
 {
     public class Bot : Player
     {
-        // Getting all pieces
-        private Random Random { get; set; }
-        private int RandomSelectedIndex { get; set; }
-        private List<string> BotPieces { get; set; } // List containing all bot pieces in the current state of the game
+        private List<Piece> BotPieces { get; set; }
 
         public Bot(Game game, Color color, string name) : base(game, color, name)
         {
             BotPieces = new List<string>();
-            Random = new Random();
         }
 
         /// <summary>
-        /// Generates the move from it's json file
+        /// Generates the move from it's move database
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A array containing the Piece name to be moved and the Board position name</returns>
         public string[] GetMove()
         {
-            GetPieces();
+            var random = new Random();
+            FillBotPiecesList();
 
-            string[] output = new string[2];
+            string[] move = new string[2];
 
-            RandomSelectedIndex = Random.Next(BotPieces.Count);
-            output[0] = BotPieces[RandomSelectedIndex];
+            int randomSelectedIndex = random.Next(BotPieces.Count);
+            move[0] = BotPieces[randomSelectedIndex].Name;
 
-            RandomSelectedIndex = Random.Next(Game.Board.BoardArray.Length);
-            output[1] = GetPositionNameByIndex(RandomSelectedIndex);
+            randomSelectedIndex = random.Next(Game.Board.BoardArray.Length);
+            move[1] = GetBoardPositionNameByIndex(randomSelectedIndex);
 
             BotPieces.Clear(); 
-            return output;
+            return move;
 
         }
 
         /// <summary>
         /// Populates the BotPieces List with all bot pieces in the actual state of the game
         /// </summary>
-        private void GetPieces()
+        private void FillBotPiecesList()
         {
-            foreach (Piece item in Game.Board.BoardArray)
+            foreach (var piece in Game.Board.BoardArray)
             {
-                if (item == null)
+                if (piece == null)
                 {
                     continue;
                 }
 
-                if (item.Owner == this)
+                if (piece.Owner == this)
                 {
-                    BotPieces.Add(item.Name);
+                    BotPieces.Add(piece);
                 }
             }
         }
@@ -65,8 +59,8 @@ namespace Hexapawn.Players
         /// <summary>
         /// Returns the position name from the board in all 3x3 possible positions
         /// </summary>
-        /// <param name="index"></param>
-        private string GetPositionNameByIndex(int index)
+        /// <param name="index">The board index</param>
+        private string GetBoardPositionNameByIndex(int index)
         {
             switch (index)
             {
@@ -80,15 +74,16 @@ namespace Hexapawn.Players
                 case 7: return "B3";
                 case 8: return "C3";
                 default:
-                    throw new IndexOutOfRangeException("Indice inválido");
+                    throw new IndexOutOfRangeException("Invalid Index");
             }
         }
-
+       
+        #region Move's Storage
         /// <summary>
-        /// When the bot performs a unlearned move, it will add to his move json file
+        /// When the bot performs a unlearned move, it will it to the database
         /// </summary>
         /// <param name="move"></param>
-        private void AddMoveToJsonFile(string[] move)
+        private void AddMoveToDatabase(string[] move)
         {
 
         }
@@ -100,5 +95,6 @@ namespace Hexapawn.Players
         {
 
         }
+        #endregion
     }
 }
