@@ -13,33 +13,33 @@ namespace Hexapawn
 {
     class Program
     {
+
         static void Main(string[] args)
         {
             string playAgain;
-
+            
             // Play again loop
             do
             {
-                // New game starting with default positions.
-                Game game = new Game();
+                var game = new Game();
                 playAgain = "N";
                 Console.Clear();
                 DrawBoard(game.Board);
 
-                // Game loop
+                // Turn loop
                 while (true)
                 {
                     // Player 1 Move loop
                     while (true)
                     {
                         Console.Write("Choose a piece to be moved (P1, P2, P3): ");
-                        string pawn = Console.ReadLine().ToUpper().Trim();
-                        Console.Write("Choose the piece destiny: ");
-                        string position = Console.ReadLine().ToUpper().Trim();
+                        string pieceName = Console.ReadLine().ToUpper().Trim();
+                        Console.Write("Choose the piece's destiny: ");
+                        string positionName = Console.ReadLine().ToUpper().Trim();
 
                         try
                         {
-                            game.Move(game.Player1.GetMove(pawn, position));
+                            game.Move(pieceName, positionName);
                             DrawBoard(game.Board);
                             break;
                         }
@@ -61,7 +61,7 @@ namespace Hexapawn
                     }
 
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("O bot está pensando...");
+                    Console.WriteLine("The bot is thinking...");
                     Console.ForegroundColor = ConsoleColor.White;
                     Thread.Sleep(1000);
 
@@ -93,7 +93,7 @@ namespace Hexapawn
                 }
 
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write($"O vencedor é o {game.Winner.Name}! Deseja jogar novamente?(Digite \"S\"): ");
+                Console.Write($"The winner is the {game.Winner.Name}! Play one more time?(\"S\"): ");
                 Console.ForegroundColor = ConsoleColor.White;
                 playAgain = Console.ReadLine().ToUpper().Trim();
 

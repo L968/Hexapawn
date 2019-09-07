@@ -29,13 +29,25 @@ namespace Hexapawn.GameComponents
             InactivePlayer = Player2;
         }
 
-        public void Move(string[] move)
+        public void Move(string pieceName, string positionName)
         {
-            Piece piece = GetPieceByPositionInBoardArray(move[0]); // e.g: P1, K1
-            int[] pieceDestiny = GetTilePositionInBoardArray(move[1]); // e.g: A2, B2
+            var piece = GetPieceByPositionInBoardArray(pieceName);
+            var positionIndexInBoardArray = GetPositionIndexInBoardArray(positionName);
 
             IsActivePlayerThePieceOwner(piece);
-            MovePiece(piece, pieceDestiny);
+            MovePiece(piece, positionIndexInBoardArray);
+            CheckWinner();
+            SwitchActivePlayer();
+            Turn++;
+        }
+
+        public void Move(string[] movement)
+        {
+            var piece = GetPieceByPositionInBoardArray(movement[0]);
+            var finalPosition = GetPositionIndexInBoardArray(movement[1]);
+
+            IsActivePlayerThePieceOwner(piece);
+            MovePiece(piece, finalPosition);
             CheckWinner();
             SwitchActivePlayer();
             Turn++;
@@ -60,34 +72,34 @@ namespace Hexapawn.GameComponents
         /// <summary>
         /// Returns a existing Piece object on the BoardArray passing the piece's name inputed at the console as argument
         /// </summary>
-        /// <param name="piece">Piece name</param>
+        /// <param name="pieceName">Piece name</param>
         /// <returns></returns>
-        private Piece GetPieceByPositionInBoardArray(string piece)
+        private Piece GetPieceByPositionInBoardArray(string pieceName)
         {
             // Checking name for every EXISTING piece on BoardArray
-            foreach (Piece item in Board.BoardArray)
+            foreach (var piece in Board.BoardArray)
             {
-                // Avoiding null reference exception in order to the foreach statement runs completely through the array*
-                if (item == null)
+                // Avoiding null reference exception in order to the foreach statement runs completely through the array
+                if (piece == null)
                 {
                     continue;
                 }
 
                 // Check if the inputed piece name is equal to the actual item.Name
-                if (piece.Equals(item.Name))
+                if (pieceName.Equals(piece.Name))
                 {
-                    return Board.BoardArray[item.XPositionOnBoard, item.YPositionOnBoard];
+                    return Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard];
                 }
             }
-            throw new MoveException("Peça não encontrada");
+            throw new MoveException("Piece not found");
         }
 
         /// <summary>
-        /// Returns a int[] containing the XPositionOnBoardArray and YPositionOnBoardArray passing the position name as argument
+        /// Returns a int[] containing the XPositionOnBoardArray and YPositionOnBoardArray
         /// </summary>
         /// <param name="tile">Position name e.g. A1, B2</param>
         /// <returns></returns>
-        private int[] GetTilePositionInBoardArray(string tile)
+        private int[] GetPositionIndexInBoardArray(string tile)
         {
             // Needs to be flexible enough to accept multiple board sizes :(
             switch (tile)
@@ -101,17 +113,17 @@ namespace Hexapawn.GameComponents
                 case "C1": return new int[2] { 0, 2 };
                 case "C2": return new int[2] { 1, 2 };
                 case "C3": return new int[2] { 2, 2 };
-                default: throw new MoveException("Posição no tabuleiro não encontrada");
+                default: throw new MoveException("Board position not found");
             }
         }
 
-        private void MovePiece(Piece piece, int[] pieceDestiny)
+        private void MovePiece(Piece piece, int[] positionIndexInBoardArray)
         {
-            if (piece.IsValidPath(pieceDestiny[0], pieceDestiny[1]))
+            if (piece.IsValidPath(positionIndexInBoardArray[0], positionIndexInBoardArray[1]))
             {
                 Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = null;
-                piece.XPositionOnBoard = pieceDestiny[0];
-                piece.YPositionOnBoard = pieceDestiny[1];
+                piece.XPositionOnBoard = positionIndexInBoardArray[0];
+                piece.YPositionOnBoard = positionIndexInBoardArray[1];
                 Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = piece;
             }
         }

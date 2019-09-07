@@ -1,6 +1,5 @@
 ﻿using Hexapawn.GameComponents;
 using Hexapawn.Pieces;
-using Hexapawn.Exceptions;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +11,7 @@ namespace Hexapawn.Players
 
         public Bot(Game game, Color color, string name) : base(game, color, name)
         {
-            BotPieces = new List<string>();
+            BotPieces = new List<Piece>();
         }
 
         /// <summary>

@@ -1,11 +1,6 @@
 ﻿using Hexapawn.Exceptions;
 using Hexapawn.GameComponents;
 using Hexapawn.Players;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hexapawn.Pieces
 {
@@ -28,7 +23,7 @@ namespace Hexapawn.Pieces
                 return true;
             }
 
-            throw new MoveException("Movimento inválido");
+            throw new MoveException("Invalid Move");
         }
 
         private bool PawnCanMoveForward(int xDestinyPosition, int yDestinyPosition)
