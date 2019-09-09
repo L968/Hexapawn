@@ -22,19 +22,20 @@ namespace Hexapawn.GameComponents
         public Game()
         {
             Turn = 1;
+            Player1 = new Human(this, Color.WHITE, "Human");
+            Player2 = new Bot(this, Color.BLACK, "Bot");
             Board = new Board(this);
-            Player1 = new Human(this, Color.WHITE, "Human"); // Player 1 HAS to be WHITE, do not change it
-            Player2 = new Bot(this, Color.BLACK, "Bot"); // // Player 2 HAS to be BLACK, do not change it
-            ActivePlayer = Player1; // First turn
+            ActivePlayer = Player1;
             InactivePlayer = Player2;
         }
 
         public void Move(string pieceName, string positionName)
         {
-            var piece = GetPieceByPositionInBoardArray(pieceName);
+            var piece = GetPieceByName(pieceName);
             var positionIndexInBoardArray = GetPositionIndexInBoardArray(positionName);
 
             IsActivePlayerThePieceOwner(piece);
+            piece.IsValidMove(positionIndexInBoardArray);
             MovePiece(piece, positionIndexInBoardArray);
             CheckWinner();
             SwitchActivePlayer();
@@ -43,11 +44,12 @@ namespace Hexapawn.GameComponents
 
         public void Move(string[] movement)
         {
-            var piece = GetPieceByPositionInBoardArray(movement[0]);
-            var finalPosition = GetPositionIndexInBoardArray(movement[1]);
+            var piece = GetPieceByName(movement[0]);
+            var positionIndexInBoardArray = GetPositionIndexInBoardArray(movement[1]);
 
             IsActivePlayerThePieceOwner(piece);
-            MovePiece(piece, finalPosition);
+            piece.IsValidMove(positionIndexInBoardArray);
+            MovePiece(piece, positionIndexInBoardArray);
             CheckWinner();
             SwitchActivePlayer();
             Turn++;
@@ -56,7 +58,7 @@ namespace Hexapawn.GameComponents
         /// <summary>
         /// Checking if the Active Player is the Piece Owner
         /// </summary>
-        /// <param name="piece">The piece to be moved</param>
+        /// <param name="piece">The piece to be checked</param>
         private void IsActivePlayerThePieceOwner(Piece piece)
         {
             if (piece.Owner == ActivePlayer)
@@ -65,27 +67,24 @@ namespace Hexapawn.GameComponents
             }
             else
             {
-                throw new MoveException("You are not the owner of this piece!");
+                throw new MoveException("You are not the owner of this piece");
             }
         }
 
         /// <summary>
-        /// Returns a existing Piece object on the BoardArray passing the piece's name inputed at the console as argument
+        /// Returns the Piece object searching for the piece's name
         /// </summary>
         /// <param name="pieceName">Piece name</param>
         /// <returns></returns>
-        private Piece GetPieceByPositionInBoardArray(string pieceName)
+        private Piece GetPieceByName(string pieceName)
         {
-            // Checking name for every EXISTING piece on BoardArray
             foreach (var piece in Board.BoardArray)
             {
-                // Avoiding null reference exception in order to the foreach statement runs completely through the array
                 if (piece == null)
                 {
                     continue;
                 }
 
-                // Check if the inputed piece name is equal to the actual item.Name
                 if (pieceName.Equals(piece.Name))
                 {
                     return Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard];
@@ -95,13 +94,11 @@ namespace Hexapawn.GameComponents
         }
 
         /// <summary>
-        /// Returns a int[] containing the XPositionOnBoardArray and YPositionOnBoardArray
         /// </summary>
         /// <param name="tile">Position name e.g. A1, B2</param>
-        /// <returns></returns>
+        /// <returns>A int[] containing the XPositionOnBoardArray and YPositionOnBoardArray</returns>
         private int[] GetPositionIndexInBoardArray(string tile)
         {
-            // Needs to be flexible enough to accept multiple board sizes :(
             switch (tile)
             {
                 case "A1": return new int[2] { 0, 0 };
@@ -119,13 +116,10 @@ namespace Hexapawn.GameComponents
 
         private void MovePiece(Piece piece, int[] positionIndexInBoardArray)
         {
-            if (piece.IsValidPath(positionIndexInBoardArray[0], positionIndexInBoardArray[1]))
-            {
-                Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = null;
-                piece.XPositionOnBoard = positionIndexInBoardArray[0];
-                piece.YPositionOnBoard = positionIndexInBoardArray[1];
-                Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = piece;
-            }
+            Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = null;
+            piece.XPositionOnBoard = positionIndexInBoardArray[0];
+            piece.YPositionOnBoard = positionIndexInBoardArray[1];
+            Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard] = piece;
         }
 
         private void SwitchActivePlayer()
@@ -156,46 +150,61 @@ namespace Hexapawn.GameComponents
             switch (ActivePlayer.Color)
             {
                 case Color.WHITE:
-                    foreach (Piece item in Board.BoardArray)
+                    foreach (var piece in Board.BoardArray)
                     {
-                        // Avoiding null reference exception
-                        if (item == null)
+                        if (piece == null)
                         {
                             continue;
                         }
 
-                        // Piece color has to be the same as it's owner
-                        if (item.Owner.Color == Color.WHITE)
+                        if (piece.Owner.Color == Color.WHITE)
                         {
-                            // Cheking when a pawn of White Team crossed to the other side of the board
-                            if (item.XPositionOnBoard == 0)
+                            if (piece.XPositionOnBoard == 0)
                             {
                                 Winner = ActivePlayer;
+                                return;
                             }
                         }
                     }
                     break;
                 case Color.BLACK:
-                    foreach (Piece item in Board.BoardArray)
+                    foreach (var piece in Board.BoardArray)
                     {
-                        // Avoiding null reference exceptio
-                        if (item == null)
+                        if (piece == null)
                         {
                             continue;
                         }
-
-                        // Piece color has to be the same as it's owner
-                        if (item.Owner.Color == Color.BLACK)
+                        
+                        if (piece.Owner.Color == Color.BLACK)
                         {
-                            // Cheking when a pawn of Black Team crossed to the other side of the board
-                            if (item.XPositionOnBoard == 2)
+                            if (piece.XPositionOnBoard == 2)
                             {
                                 Winner = ActivePlayer;
+                                return;
                             }
                         }
                     }
                     break;
             }
+            #endregion
+
+            #region Win Condition 3 - Next player doesn't have any moves
+            foreach (var piece in Board.BoardArray)
+            {
+                if (piece == null)
+                {
+                    continue;
+                }
+
+                if (piece.Owner.Color == InactivePlayer.Color)
+                {
+                    if (piece.CanMove())
+                    {
+                        return;
+                    }
+                }
+            }
+            Winner = ActivePlayer;
             #endregion
         }
 

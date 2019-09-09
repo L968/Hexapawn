@@ -23,19 +23,20 @@ namespace Hexapawn.Players
         {
             int pieceQuantity = 0;
 
-            foreach (Piece item in Game.Board.BoardArray)
+            foreach (Piece piece in Game.Board.BoardArray)
             {
-                if (item == null)
+                if (piece == null)
                 {
                     continue;
                 }
-                else if (item.Owner.Color == Color)
+
+                if (piece.Owner.Color == Color)
                 {
                     pieceQuantity++;
                 }
             }
 
-            return pieceQuantity == 0;
+            return pieceQuantity != 0;
         }
     }
 }

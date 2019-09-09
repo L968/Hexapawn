@@ -60,17 +60,14 @@ namespace Hexapawn
                         break;
                     }
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("The bot is thinking...");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Thread.Sleep(1000);
+                    BotDelayMessage();
 
                     // Player 2 Move loop
                     while (true)
                     {
                         try
                         {
-                            game.Move(game.Player2.GetMove());
+                            game.Move(game.Player2.GenerateMove());
                             DrawBoard(game.Board);
                             break;
                         }
@@ -98,6 +95,14 @@ namespace Hexapawn
                 playAgain = Console.ReadLine().ToUpper().Trim();
 
             } while (playAgain == "S");
+        }
+
+        private static void BotDelayMessage()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("The bot is thinking...");
+            Console.ForegroundColor = ConsoleColor.White;
+            Thread.Sleep(1000);
         }
 
         private static void DrawBoard(Board board)

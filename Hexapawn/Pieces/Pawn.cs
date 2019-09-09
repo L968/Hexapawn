@@ -11,22 +11,43 @@ namespace Hexapawn.Pieces
             
         }
 
-        public override bool IsValidPath(int xDestinyPosition, int yDestinyPosition)
+        public override void IsValidMove(int[] positionIndexInBoardArray)
         {
-            if (PawnCanMoveForward(xDestinyPosition, yDestinyPosition))
+            if (IsMovingForward(positionIndexInBoardArray[0], positionIndexInBoardArray[1]))
             {
-                return true;
+                return;
             }
 
-            if (PawnCanCapture(xDestinyPosition, yDestinyPosition))
+            if (IsCapturing(positionIndexInBoardArray[0], positionIndexInBoardArray[1]))
             {
-                return true;
+                return;
             }
 
             throw new MoveException("Invalid Move");
         }
 
-        private bool PawnCanMoveForward(int xDestinyPosition, int yDestinyPosition)
+        public override bool CanMove()
+        {
+            for (int i = 0; i <= 2; i++)
+            {
+                for (int j = 0; j <= 2; j++)
+                {
+                    try
+                    {
+                        IsValidMove(new int[2] { i, j });
+                        return true;
+                    }
+                    catch (MoveException)
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsMovingForward(int xDestinyPosition, int yDestinyPosition)
         {
             switch (Owner.Color)
             {
@@ -35,7 +56,7 @@ namespace Hexapawn.Pieces
                     if(XPositionOnBoard - 1 == xDestinyPosition
                     && YPositionOnBoard == yDestinyPosition)
                     {
-                        // Checking if the destiny position has a pawn in front of this pawn
+                        // Checking if the destiny position has a piece
                         return Owner.Game.Board[xDestinyPosition, yDestinyPosition] == null;
                     }
                     else
@@ -57,36 +78,35 @@ namespace Hexapawn.Pieces
             }
         }
 
-        private bool PawnCanCapture(int xDestinyPosition, int yDestinyPosition)
+        private bool IsCapturing(int xDestinyPosition, int yDestinyPosition)
         {
             switch (Owner.Color)
             {
                 case Color.WHITE:
-                    // Cheking if it's making a capturing move (Diagonal move)
                     if (XPositionOnBoard - 1 == xDestinyPosition
-                     && (YPositionOnBoard + 1 == yDestinyPosition || YPositionOnBoard - 1 == yDestinyPosition))
+                    && (YPositionOnBoard + 1 == yDestinyPosition || YPositionOnBoard - 1 == yDestinyPosition))
                     {
-                        // Checking if the destiny position has a pawn
+                        // Checking if the destiny position has a piece
                         if (Owner.Game.Board[xDestinyPosition, yDestinyPosition] != null)
                         {
-                            // Checking if the pawn being captured is from the same team
+                            // Checking if the piece being captured is from the same team
                             if (Owner.Game.Board[xDestinyPosition, yDestinyPosition].Owner.Color != Color.WHITE)
                             {
                                 return true;
                             }
                             else
                             {
-                                throw new MoveException("Você não pode capturar sua própria peça");
+                                throw new MoveException("You cannot capture your own piece");
                             }
                         }
                         else
                         {
-                            throw new MoveException("Não há peças para capturar nesta posição");
+                            throw new MoveException("There's no pieces to be captured in this position");
                         }
                     }
                     else
                     {
-                        throw new MoveException("Não é possível capturar peças nessa posição");
+                        throw new MoveException("Invalid move");
                     }
                 case Color.BLACK:
                     if (XPositionOnBoard + 1 == xDestinyPosition
@@ -100,22 +120,22 @@ namespace Hexapawn.Pieces
                             }
                             else
                             {
-                                throw new MoveException("Você não pode capturar sua própria peça");
+                                throw new MoveException("You cannot capture your own piece");
                             }
                         }
                         else
                         {
-                            throw new MoveException("Não há peças para capturar nesta posição");
+                            throw new MoveException("There's no pieces to be captured in this position");
                         }
                     }
                     else
                     {
-                        throw new MoveException("Não é possível capturar peças nessa posição");
+                        throw new MoveException("Invalid move");
                     }
                 default:
-                    throw new MoveException("Cor da peça não encontrada");
+                    throw new MoveException("Piece color not found");
             }
         }
-
+  
     }
 }

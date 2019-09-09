@@ -7,7 +7,6 @@ namespace Hexapawn.Pieces
     {
         public string Name { get; private set; }
         public Player Owner { get; private set; }
-
         public int XPositionOnBoard { get; set; }
         public int YPositionOnBoard { get; set; }
 
@@ -22,7 +21,12 @@ namespace Hexapawn.Pieces
             board.BoardArray[XPositionOnBoard, YPositionOnBoard] = this; // Self allocating on the board
         }
 
-        public abstract bool IsValidPath(int xPosition, int yPosition);
+        /// <summary>
+        /// Throws a MoveException when it's an invalid move
+        /// </summary>
+        /// <param name="positionIndexInBoardArray"></param>
+        public abstract void IsValidMove(int[] positionIndexInBoardArray);
+        public abstract bool CanMove();
 
     }
 }

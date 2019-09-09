@@ -18,7 +18,7 @@ namespace Hexapawn.Players
         /// Generates the move from it's move database
         /// </summary>
         /// <returns>A array containing the Piece name to be moved and the Board position name</returns>
-        public string[] GetMove()
+        public string[] GenerateMove()
         {
             var random = new Random();
             FillBotPiecesList();
@@ -77,7 +77,7 @@ namespace Hexapawn.Players
             }
         }
        
-        #region Move's Storage
+        #region Move Storage
         /// <summary>
         /// When the bot performs a unlearned move, it will it to the database
         /// </summary>
