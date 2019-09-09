@@ -71,9 +71,8 @@ namespace Hexapawn
                             DrawBoard(game.Board);
                             break;
                         }
-                        catch (MoveException ex)
+                        catch (MoveException)
                         {
-                            ShowMoveExpectionMessage(ex.Message);
                             continue;
                         }
                         catch (Exception ex)

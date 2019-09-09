@@ -57,7 +57,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Players\BotMoves.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="IA\BLL\" />
+    <Folder Include="IA\DAL\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
