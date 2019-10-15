@@ -1,12 +1,7 @@
 ﻿using System;
+using System.Threading;
 using Hexapawn.Exceptions;
 using Hexapawn.GameComponents;
-using Hexapawn.Pieces;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Hexapawn.Players;
 
 namespace Hexapawn
@@ -17,7 +12,10 @@ namespace Hexapawn
         static void Main(string[] args)
         {
             string playAgain;
-            
+            int a = 0;
+            int b = 0;
+            int c = 0;
+
             // Play again loop
             do
             {
@@ -29,17 +27,28 @@ namespace Hexapawn
                 // Turn loop
                 while (true)
                 {
-                    // Player 1 Move loop
+                    // Move loop
                     while (true)
                     {
-                        Console.Write("Choose a piece to be moved (P1, P2, P3): ");
-                        string pieceName = Console.ReadLine().ToUpper().Trim();
-                        Console.Write("Choose the piece's destiny: ");
-                        string positionName = Console.ReadLine().ToUpper().Trim();
+                        var move = new string[2];
+
+                        if (game.ActivePlayer is Human)
+                        {
+                            Console.Write("Choose a piece to be moved (P1, P2, P3): ");
+                            move[0] = Console.ReadLine().ToUpper().Trim();
+                            Console.Write("Choose the piece's destiny: ");
+                            move[1] = Console.ReadLine().ToUpper().Trim();
+                        }
+                        else if (game.ActivePlayer is Bot)
+                        {
+                            var bot = game.ActivePlayer as Bot;
+                            BotDelayMessage();
+                            move = bot.GenerateMove();
+                        }
 
                         try
                         {
-                            game.Move(pieceName, positionName);
+                            game.Move(move);
                             DrawBoard(game.Board);
                             break;
                         }
@@ -57,41 +66,20 @@ namespace Hexapawn
 
                     if (game.Winner != null)
                     {
-                        break;
-                    }
-
-                    BotDelayMessage();
-
-                    // Player 2 Move loop
-                    while (true)
-                    {
-                        try
+                        if (game.ActivePlayer is Bot)
                         {
-                            game.Move(game.Player2.GenerateMove());
-                            DrawBoard(game.Board);
-                            break;
+                            var bot = game.ActivePlayer as Bot;
+                            bot.SetLastMoveActiveToZero();
                         }
-                        catch (MoveException)
-                        {
-                            continue;
-                        }
-                        catch (Exception ex)
-                        {
-                            ShowExpectionMessage(ex.Message);
-                            continue;
-                        }
-                    }
 
-                    if (game.Winner != null)
-                    {
                         break;
                     }
                 }
 
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.Write($"The winner is the {game.Winner.Name}! Play one more time?(\"S\"): ");
-                Console.ForegroundColor = ConsoleColor.White;
                 playAgain = Console.ReadLine().ToUpper().Trim();
+                Console.ForegroundColor = ConsoleColor.White;
 
             } while (playAgain == "S");
         }
@@ -101,7 +89,7 @@ namespace Hexapawn
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("The bot is thinking...");
             Console.ForegroundColor = ConsoleColor.White;
-            Thread.Sleep(1000);
+            Thread.Sleep(700);
         }
 
         private static void DrawBoard(Board board)

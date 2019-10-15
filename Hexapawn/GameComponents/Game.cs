@@ -1,23 +1,18 @@
 ﻿using Hexapawn.Exceptions;
 using Hexapawn.Pieces;
 using Hexapawn.Players;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hexapawn.GameComponents
 {
     public class Game
     {
         public Board Board { get; private set; }
-        public Human Player1 { get; private set; } // Setting that player1 is a Human
-        public Bot Player2 { get; private set; } // Setting that player2 is a Bot
+        public Player Player1 { get; private set; }
+        public Player Player2 { get; private set; }
         public Player Winner { get; private set; }
+        public Player ActivePlayer { get; private set; }
+        public Player InactivePlayer { get; private set; }
         public int Turn { get; private set; }
-        private Player ActivePlayer { get; set; }
-        private Player InactivePlayer { get; set; }  
 
         public Game()
         {
@@ -32,23 +27,35 @@ namespace Hexapawn.GameComponents
         public void Move(string pieceName, string positionName)
         {
             var piece = GetPieceByName(pieceName);
-            var positionIndexInBoardArray = GetPositionIndexInBoardArray(positionName);
+            var positionIndexInBoardArray = Helper.GetPositionIndexInBoardArray(positionName);
 
             IsActivePlayerThePieceOwner(piece);
             piece.IsValidMove(positionIndexInBoardArray);
+
+            if (!string.IsNullOrEmpty(piece.InvalidMoveMessage))
+            {
+                throw new MoveException(piece.InvalidMoveMessage);
+            }
+
             MovePiece(piece, positionIndexInBoardArray);
             CheckWinner();
             SwitchActivePlayer();
             Turn++;
         }
 
-        public void Move(string[] movement)
+        public void Move(string[] move)
         {
-            var piece = GetPieceByName(movement[0]);
-            var positionIndexInBoardArray = GetPositionIndexInBoardArray(movement[1]);
+            var piece = GetPieceByName(move[0]);
+            var positionIndexInBoardArray = Helper.GetPositionIndexInBoardArray(move[1]);
 
             IsActivePlayerThePieceOwner(piece);
             piece.IsValidMove(positionIndexInBoardArray);
+
+            if (!string.IsNullOrEmpty(piece.InvalidMoveMessage))
+            {
+                throw new MoveException(piece.InvalidMoveMessage);
+            }
+
             MovePiece(piece, positionIndexInBoardArray);
             CheckWinner();
             SwitchActivePlayer();
@@ -85,33 +92,12 @@ namespace Hexapawn.GameComponents
                     continue;
                 }
 
-                if (pieceName.Equals(piece.Name))
+                if (pieceName == piece.Name)
                 {
                     return Board.BoardArray[piece.XPositionOnBoard, piece.YPositionOnBoard];
                 }
             }
             throw new MoveException("Piece not found");
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="tile">Position name e.g. A1, B2</param>
-        /// <returns>A int[] containing the XPositionOnBoardArray and YPositionOnBoardArray</returns>
-        private int[] GetPositionIndexInBoardArray(string tile)
-        {
-            switch (tile)
-            {
-                case "A1": return new int[2] { 0, 0 };
-                case "A2": return new int[2] { 1, 0 };
-                case "A3": return new int[2] { 2, 0 };
-                case "B1": return new int[2] { 0, 1 };
-                case "B2": return new int[2] { 1, 1 };
-                case "B3": return new int[2] { 2, 1 };
-                case "C1": return new int[2] { 0, 2 };
-                case "C2": return new int[2] { 1, 2 };
-                case "C3": return new int[2] { 2, 2 };
-                default: throw new MoveException("Board position not found");
-            }
         }
 
         private void MovePiece(Piece piece, int[] positionIndexInBoardArray)
@@ -174,7 +160,7 @@ namespace Hexapawn.GameComponents
                         {
                             continue;
                         }
-                        
+
                         if (piece.Owner.Color == Color.BLACK)
                         {
                             if (piece.XPositionOnBoard == 2)
@@ -198,7 +184,7 @@ namespace Hexapawn.GameComponents
 
                 if (piece.Owner.Color == InactivePlayer.Color)
                 {
-                    if (piece.CanMove())
+                    if (piece.GetValidPositionsToMove().Count != 0)
                     {
                         return;
                     }

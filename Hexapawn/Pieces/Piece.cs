@@ -1,4 +1,5 @@
-﻿using Hexapawn.GameComponents;
+﻿using System.Collections.Generic;
+using Hexapawn.GameComponents;
 using Hexapawn.Players;
 
 namespace Hexapawn.Pieces
@@ -9,7 +10,7 @@ namespace Hexapawn.Pieces
         public Player Owner { get; private set; }
         public int XPositionOnBoard { get; set; }
         public int YPositionOnBoard { get; set; }
-
+        public string InvalidMoveMessage { get; protected set; }
 
         protected Piece(int xPosition, int yPosition, Player owner, Board board, string name)
         {
@@ -21,12 +22,7 @@ namespace Hexapawn.Pieces
             board.BoardArray[XPositionOnBoard, YPositionOnBoard] = this; // Self allocating on the board
         }
 
-        /// <summary>
-        /// Throws a MoveException when it's an invalid move
-        /// </summary>
-        /// <param name="positionIndexInBoardArray"></param>
-        public abstract void IsValidMove(int[] positionIndexInBoardArray);
-        public abstract bool CanMove();
-
+        public abstract bool IsValidMove(int[] positionIndexInBoardArray);
+        public abstract List<int[]> GetValidPositionsToMove();
     }
 }
