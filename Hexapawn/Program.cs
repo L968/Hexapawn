@@ -27,24 +27,24 @@ namespace Hexapawn
                     // Move loop
                     while (true)
                     {
-                        var move = new string[2];
-
-                        if (game.ActivePlayer is Human)
-                        {
-                            Console.Write("Choose a piece to be moved (P1, P2, P3): ");
-                            move[0] = Console.ReadLine().ToUpper().Trim();
-                            Console.Write("Choose the piece's destiny: ");
-                            move[1] = Console.ReadLine().ToUpper().Trim();
-                        }
-                        else if (game.ActivePlayer is Bot)
-                        {
-                            var bot = game.ActivePlayer as Bot;
-                            BotDelayMessage();
-                            move = bot.GenerateMove();
-                        }
-
                         try
                         {
+                            var move = new string[2];
+
+                            if (game.ActivePlayer is Human)
+                            {
+                                Console.Write("Choose a piece to be moved (P1, P2, P3): ");
+                                move[0] = Console.ReadLine().ToUpper().Trim();
+                                Console.Write("Choose the piece's destiny: ");
+                                move[1] = Console.ReadLine().ToUpper().Trim();
+                            }
+                            else if (game.ActivePlayer is Bot)
+                            {
+                                var bot = game.ActivePlayer as Bot;
+                                BotDelayMessage();
+                                move = bot.GenerateMove();
+                            }
+
                             game.Move(move);
                             DrawBoard(game.Board);
                             break;
