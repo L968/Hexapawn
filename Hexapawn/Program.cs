@@ -12,9 +12,6 @@ namespace Hexapawn
         static void Main(string[] args)
         {
             string playAgain;
-            int a = 0;
-            int b = 0;
-            int c = 0;
 
             // Play again loop
             do
